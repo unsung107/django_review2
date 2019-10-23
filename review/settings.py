@@ -31,9 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-
+    'accounts',
     'articles',
-
     #Third party
     'django_extensions',
 
@@ -124,3 +123,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files')
+
+#django.com/media/사용자가 업로드한 파일 경로
+MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "assets"),
+]
+
+AUTH_USER_MODEL = 'accounts.User'

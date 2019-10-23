@@ -6,12 +6,45 @@
 <hr>
 <h2>{{ article.title }}</h2>
 <p>{{ article.created_at }}</p>
+<p>{{ article.user }}</p>
 <hr>
+<a href="{% url 'articles:like' article.pk %}">
+  {% if user in article.liked_users.all %}
+    <i class="fas fa-heart fa-lg"></i>
+  {% else %}
+    <i class="far fa-heart fa-lg"></i>
+  {% endif %}
+  
+</a>
+
+<span>{{article.liked_users.all | length}}</span>
 <p>{{ article.content }}</p>
 <hr>
+{% if article.user == request.user %}
 <a href= {% url 'articles:update' article.pk %}><button>[수정하기]</button></a>
 <form action="{% url 'articles:delete' article.pk %}" method='POST'>
 {% csrf_token %}
 <button>[삭제하기]</button>
 </form>
+{% endif %}
+<form action="{% url 'articles:comment_create' article.pk %}" method='POST'>
+{% csrf_token %}
+{{ form.as_p }}
+<input type="hidden" name="article" value="{{ article.pk }}">
+<button type="submit">댓글 작성</button>
+</form>
+{% for comment in comments %}
+<li>{{ comment.content }} {{ comment.user }} {{ comment.created_at }} 
+{% if request.user == comment.user %}
+<form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST">
+{% csrf_token %}
+<button type="submit">[댓글삭제]</button>
+</form>
+{% endif %}
+</li> 
+{% empty %}
+<p>아직 댓글이 없습니다</p>
+{% endfor %}
+
+{% include 'articles/_follow.html' %}
 {% endblock container %}
